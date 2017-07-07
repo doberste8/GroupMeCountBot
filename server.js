@@ -7,13 +7,10 @@ var bodyParser = require("body-parser");
 var methodOverride = require("method-override");
 
 // config =====================================================================
-var db = require("./config/db");
+require('dotenv').config({path:'./config/.env'});
 
 //set port
 var port = 8080;
-
-// create mysql database connection pool
-db.init();
 
 // get all data of the body (POST) parameters
 app.use(bodyParser.json());
@@ -23,8 +20,8 @@ app.use(methodOverride("X-HTTP-Method-Override"));
 app.use(express.static(__dirname + "/public"));
 
 // routes =====================================================================
-var router = require('./app/routes');
-app.use('/', router);
+//var router = require('./app/routes');
+//app.use('/', router);
 
 // start app ==================================================================
 app.listen(port);
