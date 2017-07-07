@@ -1,0 +1,29 @@
+{
+  "name": "GroupMeCountBot",
+  "version": "1.0.0",
+  "description": "group me bot to post message count",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doberste8/GroupMeCountBot.git"
+  },
+  "keywords": [
+    "GroupMe",
+    "bot",
+    "message count"
+  ],
+  "author": "stephan dober",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/doberste8/GroupMeCountBot/issues"
+  },
+  "homepage": "https://github.com/doberste8/GroupMeCountBot#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "method-override": "^2.3.7",
+  }
+}
