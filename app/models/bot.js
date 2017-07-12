@@ -8,9 +8,10 @@ var token = process.env.TOKEN;
 
 function respond(body,res) {
   console.log(body.text);
-  var messageRegex = /^Message Count\?$/;
-
-  if (body.text && messageRegex.test(body.text)) {
+//  var messageRegex = /^Message Count\?$/;
+  var messageRegex = /count/i;
+ 
+ if (body.text && messageRegex.test(body.text)) {
     res.writeHead(200);
     getMessageCount(postMessage);
     res.end();
