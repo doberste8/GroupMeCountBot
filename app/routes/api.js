@@ -12,6 +12,6 @@ api.route('/')
 
     .post(function(req, res) {
         bot.respond(req.body, res);
-    })
+    });
     
 module.exports = api;

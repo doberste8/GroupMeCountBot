@@ -1,9 +1,6 @@
 // app/models/bot.js
 
 var HTTPS = require('https');
-require('dotenv').config({
-  path: '../../config/.env'
-});
 
 var botID = process.env.BOT_ID;
 var groupID = process.env.GROUP_ID;
@@ -11,17 +8,17 @@ var token = process.env.TOKEN;
 
 function respond(body,res) {
   console.log(body.text);
-    var messageRegex = /^Message Count\?$/;
+  var messageRegex = /^Message Count\?$/;
 
   if (body.text && messageRegex.test(body.text)) {
-    //this.res.writeHead(200);
+    res.writeHead(200);
     getMessageCount(postMessage);
-    //this.res.end();
+    res.end();
   }
   else {
     console.log("don't care");
-    //this.res.writeHead(200);
-    //this.res.end();
+    res.writeHead(200);
+    res.end();
   }
 }
 
@@ -90,9 +87,9 @@ function getMessageCount(postMessage) {
         });
     });
 
-    Req.on('error', function(err) {
+    /*Req.on('error', function(err) {
         //res.send('error: ' + err.message);
-    });
+    });*/
 
     Req.end();
 }
