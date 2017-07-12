@@ -1,7 +1,6 @@
 // app/routes/api.js
-
+var bot = require('../models/bot.js');
 var api = require('express').Router();
-var list = require('../models/list');
 
 // middleware for all api requests
 api.use(function(req, res, next) {
@@ -9,24 +8,10 @@ api.use(function(req, res, next) {
     next();
 });
 
-api.route('/list')
+api.route('/')
 
-    .get(function(req, res) {
-        list.get(res);
-    })
-  
     .post(function(req, res) {
-        list.create(req.body, res);
+        bot.respond(req.body, res);
     })
-
-    .put(function(req, res) {
-        list.update(req.body, res);
-    });
-  
-api.route('/list/all')
-
-    .put(function(req, res) {
-        list.updateAll(req.body, res);
-    });  
-
+    
 module.exports = api;

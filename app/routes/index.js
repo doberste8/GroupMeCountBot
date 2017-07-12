@@ -11,12 +11,4 @@ router.use(function(req, res, next) {
 var api = require('./api');
 router.use('/api', api);
 
-// frontend routes ==========================================================
-// route to handle all angular requests
-router.get('*', function(req, res) {
-    res.sendFile('views/index.html', {
-        root: path.join(__dirname, '../../public')
-    });
-});
-
 module.exports = router;
