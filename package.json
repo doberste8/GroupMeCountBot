@@ -23,7 +23,8 @@
   "homepage": "https://github.com/doberste8/GroupMeCountBot#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
+    "dotenv": "^4.0.0",
     "express": "^4.14.0",
-    "method-override": "^2.3.7",
+    "method-override": "^2.3.7"
   }
 }
