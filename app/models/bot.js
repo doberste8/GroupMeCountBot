@@ -165,7 +165,7 @@ function getUserMessageCount(postMessage, userName, msgCount, last_id, msgs) {
         msgCount = obj.response.count;
         msgs = msgs.concat(obj.response.messages);
         last_id = obj.response.messages[obj.response.messages.length-1].id;
-        getUserMessageCount(postMessage,userName,msgCount,last_id,msgs);
+        setTimeout(getUserMessageCount(postMessage,userName,msgCount,last_id,msgs),0);
         } else {
           console.log("Length: "+msgs.length);
           var count=0;
