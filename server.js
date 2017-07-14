@@ -10,7 +10,7 @@ var methodOverride = require("method-override");
 require('dotenv').config({path:'./config/.env'});
 
 //set port
-var port = Number(process.env.PORT || 8081);
+var port = Number(process.env.PORT || 8080);
 
 // get all data of the body (POST) parameters
 app.use(bodyParser.json());
