@@ -14,7 +14,7 @@ function respond(body, res) {
   if (body.text && messageRegex2.test(body.text)) {
     res.writeHead(200);
     var userName = messageRegex2.exec(body.text);
-    getUserMessageCount(postUserMessage,userName[1],1,0,[]);
+    getUserMessageCount(postUserMessage,userName[1],1,0,[],0);
     res.end();
   }
   else if (body.text && messageRegex.test(body.text)) {
@@ -134,54 +134,58 @@ function getMessageCount(postMessage) {
   Req.end();
 }
 
-function getUserMessageCount(postMessage, userName, msgCount, last_id, msgs) {
+function getUserMessageCount(postMessage, userName, msgCount, last_id, msgs, count) {
   var options, Req;
   var pathAdd = "";
   if (last_id) pathAdd = "&before_id=" + last_id;
-    
-    options = {
-      hostname: 'api.groupme.com',
-      path: '/v3/groups/' + groupID + '/messages?token=' + token + '&limit=100' + pathAdd,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
 
-    Req = HTTPS.request(options, function(res) {
-      var output = '';
-      //console.log('statusCode:', res.statusCode);
-      //console.log('headers:', res.headers);
+  options = {
+    hostname: 'api.groupme.com',
+    path: '/v3/groups/' + groupID + '/messages?token=' + token + '&limit=100' + pathAdd,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
 
-      res.setEncoding('utf8');
+  Req = HTTPS.request(options, function(res) {
+    var output = '';
+    //console.log('statusCode:', res.statusCode);
+    //console.log('headers:', res.headers);
+    if (res.statusCode == 304) {
+      postMessage(userName, count);
+      Req.end();
+      return;
+    }
+    res.setEncoding('utf8');
 
-      res.on('data', function(chunk) {
-        output += chunk;
-      });
-
-      res.on('end', function() {
-        var obj = JSON.parse(output);
-        if (obj.response.messages.length>0) {
-        msgCount = obj.response.count;
-        msgs = msgs.concat(obj.response.messages);
-        last_id = obj.response.messages[obj.response.messages.length-1].id;
-        setTimeout(getUserMessageCount,0,postMessage,userName,msgCount,last_id,msgs);
-        } else {
-          console.log("Length: "+msgs.length);
-          var count=0;
-          for (var i=0;i<msgs.length;i++) {
-            if (msgs[i].name==userName) count++;
-          }
-          postMessage(userName,count);
-          }
-      });
+    res.on('data', function(chunk) {
+      output += chunk;
     });
 
-    /*Req.on('error', function(err) {
-        //res.send('error: ' + err.message);
-    });*/
+    res.on('end', function() {
+      var obj = JSON.parse(output);
+      if (obj.response.messages.length > 0) {
+        msgCount = obj.response.count;
+        msgs = obj.response.messages;
+        for (var i = 0; i < msgs.length; i++) {
+          if (msgs[i].name == userName) count++;
+        }
+        last_id = obj.response.messages[obj.response.messages.length - 1].id;
+        getUserMessageCount(postMessage, userName, msgCount, last_id, msgs, count);
+      }
+      else {
+        //console.log("Length: "+msgs.length);
+        postMessage(userName, count);
+      }
+    });
+  });
 
-    Req.end();
+  /*Req.on('error', function(err) {
+      //res.send('error: ' + err.message);
+  });*/
+
+  Req.end();
 
 }
 
