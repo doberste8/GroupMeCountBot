@@ -14,7 +14,7 @@ function respond(body, res) {
   if (body.text && messageRegex2.test(body.text)) {
     res.writeHead(200);
     var userName = messageRegex2.exec(body.text);
-    getUserMessageCount(postUserMessage,userName[1],1,0,[],0);
+    getUserId(userName[1],getUserMessageCount);
     res.end();
   }
   else if (body.text && messageRegex.test(body.text)) {
@@ -40,7 +40,7 @@ function postMessage(botResponse) {
 
   body = {
     "bot_id": botID,
-    "text": "I am message number " + botResponse
+    "text": botResponse
   };
 
   console.log('sending ' + botResponse + ' to ' + botID);
@@ -123,7 +123,7 @@ function getMessageCount(postMessage) {
     res.on('end', function() {
       var obj = JSON.parse(output);
       var msgCount = obj.response.count;
-      postMessage(msgCount);
+      postMessage("I am message number " + msgCount);
     });
   });
 
@@ -134,8 +134,9 @@ function getMessageCount(postMessage) {
   Req.end();
 }
 
-function getUserMessageCount(postMessage, userName, msgCount, last_id, msgs, count) {
+function getUserMessageCount(postMessage, userName, userId, msgCount, last_id, msgs, count) {
   var options, Req;
+  if (userId) {
   var pathAdd = "";
   if (last_id) pathAdd = "&before_id=" + last_id;
 
@@ -153,7 +154,7 @@ function getUserMessageCount(postMessage, userName, msgCount, last_id, msgs, cou
     //console.log('statusCode:', res.statusCode);
     //console.log('headers:', res.headers);
     if (res.statusCode == 304) {
-      postMessage(userName, count);
+      postMessage(userName + " has posted " + count + " messages.");
       Req.end();
       return;
     }
@@ -169,14 +170,14 @@ function getUserMessageCount(postMessage, userName, msgCount, last_id, msgs, cou
         msgCount = obj.response.count;
         msgs = obj.response.messages;
         for (var i = 0; i < msgs.length; i++) {
-          if (msgs[i].name == userName) count++;
+          if (msgs[i].user_id == userId) count++;
         }
         last_id = obj.response.messages[obj.response.messages.length - 1].id;
-        getUserMessageCount(postMessage, userName, msgCount, last_id, msgs, count);
+        getUserMessageCount(postMessage, userName, userId, msgCount, last_id, msgs, count);
       }
       else {
         //console.log("Length: "+msgs.length);
-        postMessage(userName, count);
+        postMessage(userName + " has posted " + count + " messages.");
       }
     });
   });
@@ -186,7 +187,52 @@ function getUserMessageCount(postMessage, userName, msgCount, last_id, msgs, cou
   });*/
 
   Req.end();
+} else {
+  postMessage(userName + " not found. Please use a current member name.");
+}
+}
 
+function getUserId(userName, callback) {
+   var options, Req, userId;
+
+  options = {
+    hostname: 'api.groupme.com',
+    path: '/v3/groups/' + groupID + '?token=' + token,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  Req = HTTPS.request(options, function(res) {
+    var output = '';
+    //console.log('statusCode:', res.statusCode);
+    //console.log('headers:', res.headers);
+
+    res.setEncoding('utf8');
+
+    res.on('data', function(chunk) {
+      output += chunk;
+    });
+
+    res.on('end', function() {
+      var obj = JSON.parse(output);
+      var members = obj.response.members;
+      for (var i=0;i<members.length;i++) {
+        if (userName == members[i].nickname) {
+          userId = members[i].user_id;
+          console.log("User ID: " + userId);
+        }
+      }
+      callback(postMessage,userName,userId,1,0,[],0);;
+    });
+  });
+
+  /*Req.on('error', function(err) {
+      //res.send('error: ' + err.message);
+  });*/
+
+  Req.end();
 }
 
 exports.respond = respond;
