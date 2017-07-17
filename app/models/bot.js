@@ -220,7 +220,7 @@ function getUserWeeklyMessageCount(postMessage, userName, userId, msgCount, last
       //console.log('statusCode:', res.statusCode);
       //console.log('headers:', res.headers);
       if (res.statusCode == 304) {
-        postMessage(userName + " has posted " + count + " messages.");
+        postMessage(userName + " has posted " + count + " messages this week.");
         Req.end();
         return;
       }
@@ -243,7 +243,7 @@ function getUserWeeklyMessageCount(postMessage, userName, userId, msgCount, last
         }
         else {
           //console.log("Length: "+msgs.length);
-          postMessage(userName + " has posted " + count + " messages.");
+          postMessage(userName + " has posted " + count + " messages this week.");
         }
       });
     });
