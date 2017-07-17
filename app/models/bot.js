@@ -10,8 +10,15 @@ function respond(body, res) {
   console.log(body.text);
   var messageRegex = /count/i;
   var messageRegex2 = /(.*)\.count/;
+  var messageRegex3 = /(.*)\.count\.this week/;
 
-  if (body.text && messageRegex2.test(body.text)) {
+  if (body.text && messageRegex3.test(body.text)) {
+    res.writeHead(200);
+    var userName = messageRegex2.exec(body.text);
+    getUserId(userName[1],getUserWeeklyMessageCount);
+    res.end();
+  } 
+  else if (body.text && messageRegex2.test(body.text)) {
     res.writeHead(200);
     var userName = messageRegex2.exec(body.text);
     getUserId(userName[1],getUserMessageCount);
@@ -192,6 +199,66 @@ function getUserMessageCount(postMessage, userName, userId, msgCount, last_id, m
 }
 }
 
+function getUserWeeklyMessageCount(postMessage, userName, userId, msgCount, last_id, msgs, count) {
+  var options, Req;
+  if (userId) {
+    var weekStart = getStartOfWeek();
+    var pathAdd = "";
+    if (last_id) pathAdd = "&before_id=" + last_id;
+
+    options = {
+      hostname: 'api.groupme.com',
+      path: '/v3/groups/' + groupID + '/messages?token=' + token + '&limit=100' + pathAdd,
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    Req = HTTPS.request(options, function(res) {
+      var output = '';
+      //console.log('statusCode:', res.statusCode);
+      //console.log('headers:', res.headers);
+      if (res.statusCode == 304) {
+        postMessage(userName + " has posted " + count + " messages.");
+        Req.end();
+        return;
+      }
+      res.setEncoding('utf8');
+
+      res.on('data', function(chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        if (obj.response.messages.length > 0) {
+          msgCount = obj.response.count;
+          msgs = obj.response.messages;
+          for (var i = 0; i < msgs.length; i++) {
+            if (msgs[i].created_at > weekStart/1000 && msgs[i].user_id == userId) count++;
+          }
+          last_id = obj.response.messages[obj.response.messages.length - 1].id;
+          getUserWeeklyMessageCount(postMessage, userName, userId, msgCount, last_id, msgs, count);
+        }
+        else {
+          //console.log("Length: "+msgs.length);
+          postMessage(userName + " has posted " + count + " messages.");
+        }
+      });
+    });
+
+    /*Req.on('error', function(err) {
+        //res.send('error: ' + err.message);
+    });*/
+
+    Req.end();
+  }
+  else {
+    postMessage(userName + " not found. Please use a current member name.");
+  }
+}
+
 function getUserId(userName, callback) {
    var options, Req, userId;
 
@@ -224,7 +291,7 @@ function getUserId(userName, callback) {
           console.log("User ID: " + userId);
         }
       }
-      callback(postMessage,userName,userId,1,0,[],0);;
+      callback(postMessage,userName,userId,1,0,[],0);
     });
   });
 
@@ -233,6 +300,14 @@ function getUserId(userName, callback) {
   });*/
 
   Req.end();
+}
+
+function getStartOfWeek() {
+    var date = new Date();
+    date = new Date(date.getFullYear(),date.getMonth(),date.getDate());
+    date = new Date(date.getTime()-date.getDay()*24*3600*1000);
+    var dateUTC = Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate());
+    return(dateUTC);
 }
 
 exports.respond = respond;
