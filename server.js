@@ -8,9 +8,13 @@ var methodOverride = require("method-override");
 
 // config =====================================================================
 require('dotenv').config({path:'./config/.env'});
+var db = require('./config/db');
 
 //set port
 var port = Number(process.env.PORT || 8080);
+
+//create mysql database connection pool
+db.init();
 
 // get all data of the body (POST) parameters
 app.use(bodyParser.json());
