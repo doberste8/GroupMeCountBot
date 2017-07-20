@@ -1,6 +1,7 @@
 // app/models/bot.js
 
 var HTTPS = require('https');
+var HTTP = require('http');
 
   var botID = process.env.BOT_ID;
   var groupID = process.env.GROUP_ID;
@@ -21,7 +22,7 @@ function respond(body, res) {
     console.log(body.text);
     console.log(body.sender_id);
 
-    var messageRegex = /count/i;
+    var messageRegex = /poop/i;
     var messageRegex2 = /(.*)\.count/;
     var messageRegex3 = /(.*)\.count\.this week/;
     var userName;
@@ -136,7 +137,7 @@ function getUserMessageCount(postMessage, userName, userId, weekly) {
     }
   };
   
-    Req = HTTPS.request(options, function(res) {
+    Req = HTTP.request(options, function(res) {
       var output = '';
       //console.log('statusCode:', res.statusCode);
       //console.log('headers:', res.headers);
@@ -255,8 +256,13 @@ function getUserId(userName, callback, weekly) {
           console.log("User ID: " + userId);
         }
       }
+      if (userId) {
       callback(postMessage, userName, userId, weekly);
-    });
+      } else {
+        postMessage(userName + " not found. Please use a current member name.")
+      }
+        
+      });
   });
 
   /*Req.on('error', function(err) {
@@ -330,7 +336,7 @@ function incrementUserCount(body, res1, callback) {
     }
   };
 
-  Req = HTTPS.request(options, function(res) {
+  Req = HTTP.request(options, function(res) {
     var output = '';
     //console.log('statusCode:', res.statusCode);
     //console.log('headers:', res.headers);
@@ -369,9 +375,10 @@ function databaseUpdate(data) {
     }
   };
 
-Req = HTTPS.request(options, function(res) {
+Req = HTTP.request(options, function(res) {
     if (res.statusCode == 202 || 200) {
       //neat
+      console.log("Member count database updated successfully.")
     }
     else {
       console.log('rejecting bad status code ' + res.statusCode);
