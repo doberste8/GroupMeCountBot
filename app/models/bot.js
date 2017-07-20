@@ -256,8 +256,13 @@ function getUserId(userName, callback, weekly) {
           console.log("User ID: " + userId);
         }
       }
+      if (userId) {
       callback(postMessage, userName, userId, weekly);
-    });
+      } else {
+        postMessage(userName + " not found. Please use a current member name.")
+      }
+        
+      });
   });
 
   /*Req.on('error', function(err) {
@@ -373,6 +378,7 @@ function databaseUpdate(data) {
 Req = HTTP.request(options, function(res) {
     if (res.statusCode == 202 || 200) {
       //neat
+      console.log("Member count database updated successfully.")
     }
     else {
       console.log('rejecting bad status code ' + res.statusCode);
