@@ -1,6 +1,6 @@
 {
   "name": "GroupMeCountBot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "group me bot to post message count",
   "main": "server.js",
   "scripts": {
@@ -25,6 +25,7 @@
     "body-parser": "^1.15.2",
     "dotenv": "^4.0.0",
     "express": "^4.14.0",
-    "method-override": "^2.3.7"
+    "method-override": "^2.3.7",
+    "mysql": "^2.12.0"
   }
 }
