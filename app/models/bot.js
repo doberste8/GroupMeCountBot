@@ -19,8 +19,8 @@ function bot() {
 }
 
 function respond(body, res) {
-    console.log(body.text);
-    console.log(body.sender_id);
+    //console.log(body.text);
+    //console.log(body.sender_id);
 
     var messageRegex = /poop/i;
     var messageRegex2 = /(.*)\.count/;
@@ -47,7 +47,7 @@ function respond(body, res) {
       res.end();
     }
     else {
-      console.log("don't care");
+      //console.log("don't care");
       res.writeHead(200);
       res.end();
     }
@@ -253,7 +253,7 @@ function getUserId(userName, callback, weekly) {
       for (var i = 0; i < members.length; i++) {
         if (userName == members[i].nickname) {
           userId = members[i].user_id;
-          console.log("User ID: " + userId);
+          //console.log("User ID: " + userId);
         }
       }
       if (userId) {
@@ -350,7 +350,8 @@ function incrementUserCount(body, res1, callback) {
     res.on('end', function() {
       var obj = JSON.parse(output);
       //var msgCount = obj.response.count;
-      console.log(obj);
+      console.log(body.name + ": " + body.text);
+      console.log(body.name + "(" + body.sender_id + ") incremented.");
       callback(body, res1);
     });
   });
