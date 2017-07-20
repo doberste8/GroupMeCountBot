@@ -1,6 +1,7 @@
 // app/models/bot.js
 
 var HTTPS = require('https');
+var HTTP = require('http');
 
   var botID = process.env.BOT_ID;
   var groupID = process.env.GROUP_ID;
@@ -136,7 +137,7 @@ function getUserMessageCount(postMessage, userName, userId, weekly) {
     }
   };
   
-    Req = HTTPS.request(options, function(res) {
+    Req = HTTP.request(options, function(res) {
       var output = '';
       //console.log('statusCode:', res.statusCode);
       //console.log('headers:', res.headers);
@@ -330,7 +331,7 @@ function incrementUserCount(body, res1, callback) {
     }
   };
 
-  Req = HTTPS.request(options, function(res) {
+  Req = HTTP.request(options, function(res) {
     var output = '';
     //console.log('statusCode:', res.statusCode);
     //console.log('headers:', res.headers);
@@ -369,7 +370,7 @@ function databaseUpdate(data) {
     }
   };
 
-Req = HTTPS.request(options, function(res) {
+Req = HTTP.request(options, function(res) {
     if (res.statusCode == 202 || 200) {
       //neat
     }
