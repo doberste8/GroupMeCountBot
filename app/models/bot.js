@@ -21,7 +21,7 @@ function respond(body, res) {
     console.log(body.text);
     console.log(body.sender_id);
 
-    var messageRegex = /count/i;
+    var messageRegex = /poop/i;
     var messageRegex2 = /(.*)\.count/;
     var messageRegex3 = /(.*)\.count\.this week/;
     var userName;
