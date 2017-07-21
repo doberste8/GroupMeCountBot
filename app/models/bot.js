@@ -304,6 +304,7 @@ function getMemberList(callback) {
          memberList.push({"id":parseInt(members[i].user_id,10),"nickname":members[i].nickname,"count":0,"weekly_count":0});
         }
       //console.log(memberList);
+      console.log("Updating member count database...");
       callback(memberList,0);
     });
   });
