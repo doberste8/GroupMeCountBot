@@ -32,4 +32,10 @@ api.route('/countDB')
         countDB.increment(req.query.id, res);
     });
     
+api.route('/countDB/weekly')
+
+    .get(function(req, res) {
+        countDB.getWeekly(res);
+    });
+    
 module.exports = api;
