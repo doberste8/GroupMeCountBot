@@ -30,26 +30,29 @@ function respond(body, res) {
     //console.log(body.text);
     //console.log(body.sender_id);
 
-    var messageRegex = /poop/i;
-    var messageRegex2 = /(.*)\.count/;
-    var messageRegex3 = /(.*)\.count\.this week/;
+    var messageRegex = [/(.*)\.count\.this week/,/(.*)\.count/,/poop\.this week/i,/poop/i];
     var userName;
     var weekly = 0;
 
-    if (body.text && messageRegex3.test(body.text)) {
+    if (body.text && messageRegex[0].test(body.text)) {
       res.writeHead(200);
-      userName = messageRegex2.exec(body.text);
+      userName = messageRegex[0].exec(body.text);
       weekly = 1;
       getUserId(userName[1], getUserMessageCount, weekly);
       res.end();
     }
-    else if (body.text && messageRegex2.test(body.text)) {
+    else if (body.text && messageRegex[1].test(body.text)) {
       res.writeHead(200);
-      userName = messageRegex2.exec(body.text);
+      userName = messageRegex[1].exec(body.text);
       getUserId(userName[1], getUserMessageCount, weekly);
       res.end();
     }
-    else if (body.text && messageRegex.test(body.text)) {
+    else if (body.text && messageRegex[2].test(body.text)) {
+      res.writeHead(200);
+      getWeeklyMessageCount(postMessage);
+      res.end();
+    }
+        else if (body.text && messageRegex[3].test(body.text)) {
       res.writeHead(200);
       getMessageCount(postMessage);
       res.end();
@@ -169,6 +172,44 @@ function getUserMessageCount(postMessage, userName, userId, weekly) {
     Req.end();
   }
 
+function getWeeklyMessageCount(postMessage) {
+  var options, Req;
+
+    options = {
+    hostname: process.env.HOST_NAME,
+    port: process.env.PORT,
+    path: '/api/countDB/weekly',
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  
+    Req = HTTP.request(options, function(res) {
+      var output = '';
+      //console.log('statusCode:', res.statusCode);
+      //console.log('headers:', res.headers);
+      res.setEncoding('utf8');
+
+      res.on('data', function(chunk) {
+        output += chunk;
+      });
+
+      res.on('end', function() {
+        var obj = JSON.parse(output);
+        //console.log(obj);
+        var msgCount = obj[0].count;
+        postMessage("I am message number " + msgCount + " this week.");
+      });
+    });
+
+    /*Req.on('error', function(err) {
+        //res.send('error: ' + err.message);
+    });*/
+
+    Req.end();
+  }
+  
 function populateCounts(memberList, last_id) {
   var options, Req;
     var weekStart = getStartOfWeek();
@@ -267,7 +308,7 @@ function getUserId(userName, callback, weekly) {
       if (userId) {
       callback(postMessage, userName, userId, weekly);
       } else {
-        postMessage(userName + " not found. Please use a current member name.")
+        postMessage(userName + " not found. Please use a current member name.");
       }
         
       });

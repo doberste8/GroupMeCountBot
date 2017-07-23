@@ -25,6 +25,27 @@ function countDB() {
         });
     };
 
+//get list of matches, filtered by user if specified.
+    this.getWeekly = function(res) {
+        db.acquire(function(err, con) {
+            if (err) throw err; // You *MUST* handle err and not continue execution if
+            // there is an error. this is a standard part of Node.js
+            con.query('select sum(weekly_count) as count from member_count',
+                function(err, result) {
+                    con.release();
+                    if (!err) {
+                        res.send(result);
+                    }
+                    else {
+                        res.send({
+                            status: 1,
+                            message: 'Failed to get user counts.'
+                        });
+                    }
+                });
+        });
+    };
+
     //create new match with provided data.
     this.create = function(data, res) {
         db.acquire(function(err, con) {
