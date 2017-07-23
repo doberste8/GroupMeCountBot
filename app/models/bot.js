@@ -2,13 +2,21 @@
 
 var HTTPS = require('https');
 var HTTP = require('http');
+var ontime = require("ontime");
 
   var botID = process.env.BOT_ID;
   var groupID = process.env.GROUP_ID;
   var token = process.env.TOKEN;
   
   getMemberList(populateCounts);
- var timer = setInterval(getMemberList,86400000,populateCounts);
+  ontime({
+    cycle: '00:00:00'
+}, function (ot) {
+    // do your job here
+    getMemberList(populateCounts);
+    ot.done();
+    return;
+});
 
 function bot() {
   
