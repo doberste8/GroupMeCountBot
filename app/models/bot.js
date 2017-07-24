@@ -30,7 +30,7 @@ function respond(body, res) {
     //console.log(body.text);
     //console.log(body.sender_id);
 
-    var messageRegex = [/(.*)\.count\.this week/,/(.*)\.count/,/poop\.this week/i,/poop/i];
+    var messageRegex = [/(.*)\.count\.this week/,/(.*)\.count/,/#\.this week/i,/#/];
     var userName;
     var weekly = 0;
 
