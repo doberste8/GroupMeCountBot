@@ -64,7 +64,7 @@ function celebrate(body, res1, callback) {
     res.on('end', function() {
       let obj = JSON.parse(output);
       let msgCount = obj.response.count;
-      if ((msgCount + 1) % 10000 === 0 || /^(\d)\1*$/.test(msgCount+1)) {
+      if ((msgCount + 1) % 10000 === 0 || /^(?=\d{4,})(\d)\1*$/.test(msgCount+1)) {
         postMessage(groupGifs[Math.floor(Math.random() * groupGifs.length)]);
         postMessage("Message " + (msgCount+1) + "! Party Time!!!!");
       }
@@ -101,7 +101,7 @@ function celebrate(body, res1, callback) {
       let obj = JSON.parse(output);
       //console.log(obj);
       if (obj[0]) {
-        if (obj[0].count % 1000 === 0 || /^(\d)\1*$/.test(obj[0].count)) {
+        if (obj[0].count % 1000 === 0 || /^(?=\d{4,})(\d)\1*$/.test(obj[0].count)) {
           postMessage(indGifs[Math.floor(Math.random() * indGifs.length)]);
           postMessage("It's time to Celebrate! " + body.name + " has reached " + obj[0].count + " messages!!!!");
         }
