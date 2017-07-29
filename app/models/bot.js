@@ -216,7 +216,7 @@ function getMessageCount(postMessage) {
     res.on('end', function() {
       var obj = JSON.parse(output);
       var msgCount = obj.response.count;
-      postMessage("I am message number " + (msgCount + 1));
+      postMessage("I am message number " + (msgCount + 1) + ".");
     });
   });
 
