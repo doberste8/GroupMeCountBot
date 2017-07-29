@@ -113,11 +113,11 @@ function countDB() {
     };
     
     //update all items with provided data.
-    this.updateAll = function(data, res) {
+    this.updateAll = function(res) {
         db.acquire(function(err, con) {
             if (err) throw err; // You *MUST* handle err and not continue execution if
             // there is an error. this is a standard part of Node.js
-            con.query('update member_count set ?', data,
+            con.query('update member_count set weekly_count=0',
                 function(err, result) {
                     con.release();
                     if (err)
