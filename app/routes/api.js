@@ -36,6 +36,12 @@ api.route('/countDB/weekly')
 
     .get(function(req, res) {
         countDB.getWeekly(res);
+    })
+    
+    .put(function(req, res) {
+        countDB.updateAll(res);
     });
+    
+    
     
 module.exports = api;
