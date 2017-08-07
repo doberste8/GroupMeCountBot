@@ -9,12 +9,14 @@ var botID = process.env.BOT_ID;
 var groupID = process.env.GROUP_ID;
 var token = process.env.TOKEN;
 
-getMemberList(populateCounts);
+console.log("Updating member count database...");
+populateCounts([],0);
 ontime({
   cycle: '00:00:00'
 }, function(ot) {
   // do your job here
-  getMemberList(populateCounts);
+  console.log("Updating member count database...");
+  populateCounts([],0);
   ot.done();
   return;
 });
@@ -305,7 +307,6 @@ function getWeeklyMessageCount(postMessage) {
 function populateCounts(memberList, last_id) {
   var options, Req;
   var weekStart = getStartOfWeek();
-  var memberListLength = memberList.length;
   var pathAdd = "";
   if (last_id) pathAdd = "&before_id=" + last_id;
 
@@ -342,11 +343,20 @@ function populateCounts(memberList, last_id) {
       var msgs = obj.response.messages;
       var msgsLength = msgs.length;
       if (msgsLength > 0) {
-        for (var i = 0; i < memberListLength; i++) {
-          for (var j = 0; j < msgsLength; j++) {
-            if (msgs[j].created_at > weekStart / 1000 && msgs[j].user_id == memberList[i].id) memberList[i].weekly_count++;
-            if (msgs[j].user_id == memberList[i].id) memberList[i].count++;
-          }
+        for (var i = 0; i < msgsLength; i++) {
+            if (msgs[i].user_id === "system") msgs[i].user_id = 1;
+            let index = memberList.findIndex(item => item.id === parseInt(msgs[i].user_id, 10));
+            if (index === -1) {
+              memberList.push({
+                "id": parseInt(msgs[i].user_id, 10),
+                "nickname": msgs[i].name,
+                "count": 0,
+                "weekly_count": 0
+              });
+              index = memberList.length-1;
+            }
+            if (msgs[i].created_at > weekStart / 1000) memberList[index].weekly_count++;
+            memberList[index].count++;
         }
         last_id = msgs[msgsLength - 1].id;
         populateCounts(memberList, last_id);
@@ -414,55 +424,6 @@ function getUserId(userName, callback, weekly) {
         postMessage(userName + " not found. Please use a current member name.");
       }
 
-    });
-  });
-
-  /*Req.on('error', function(err) {
-      //res.send('error: ' + err.message);
-  });*/
-
-  Req.end();
-}
-
-function getMemberList(callback) {
-  var options, Req;
-  var memberList = [];
-
-  options = {
-    hostname: 'api.groupme.com',
-    path: '/v3/groups/' + groupID + '?token=' + token,
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
-  Req = HTTPS.request(options, function(res) {
-    var output = '';
-    //console.log('statusCode:', res.statusCode);
-    //console.log('headers:', res.headers);
-
-    res.setEncoding('utf8');
-
-    res.on('data', function(chunk) {
-      output += chunk;
-    });
-
-    res.on('end', function() {
-      var obj = JSON.parse(output);
-      var members = obj.response.members;
-      for (var i = 0; i < members.length; i++) {
-
-        memberList.push({
-          "id": parseInt(members[i].user_id, 10),
-          "nickname": members[i].nickname,
-          "count": 0,
-          "weekly_count": 0
-        });
-      }
-      //console.log(memberList);
-      console.log("Updating member count database...");
-      callback(memberList, 0);
     });
   });
 
