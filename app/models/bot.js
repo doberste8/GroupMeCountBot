@@ -477,7 +477,7 @@ function getStartOfWeek() {
   var date = new Date();
   date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
   date = new Date(date.getTime() - date.getDay() * 24 * 3600 * 1000);
-  var dateUTC = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+  var dateUTC = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, date.getTimezoneOffset());
   return (dateUTC);
 }
 
