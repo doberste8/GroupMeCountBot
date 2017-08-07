@@ -376,18 +376,19 @@ function populateCounts(memberList, last_id) {
 }
 
 function getUserId(userName, callback, weekly) {
-  var options, Req, userId;
+  let options, Req, userId;
 
   options = {
-    hostname: 'api.groupme.com',
-    path: '/v3/groups/' + groupID + '?token=' + token,
+    hostname: process.env.HOST_NAME,
+    port: process.env.PORT,
+    path: '/api/countDB',
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     }
   };
 
-  Req = HTTPS.request(options, function(res) {
+  Req = HTTP.request(options, function(res) {
     var output = '';
     //console.log('statusCode:', res.statusCode);
     //console.log('headers:', res.headers);
@@ -400,10 +401,9 @@ function getUserId(userName, callback, weekly) {
 
     res.on('end', function() {
       var obj = JSON.parse(output);
-      var members = obj.response.members;
-      for (var i = 0; i < members.length; i++) {
-        if (userName == members[i].nickname) {
-          userId = members[i].user_id;
+      for (var i = 0; i < obj.length; i++) {
+        if (userName == obj[i].nickname) {
+          userId = obj[i].id;
           //console.log("User ID: " + userId);
         }
       }
