@@ -124,7 +124,7 @@ function respond(body, res) {
   //console.log(body.text);
   //console.log(body.sender_id);
 
-  var messageRegex = [/(.*)\.(count|#)\.this week/, /(.*)\.(count|#)/, /(count|#)\.this week/i, /#/];
+  var messageRegex = [/(.*)\.(count|#)\.this week/, /(.*)\.(count|#)/, /(count|#)\.this week/i, /#/, /^Refresh_DB$/];
   var userName;
   var weekly = 0;
 
@@ -149,6 +149,13 @@ function respond(body, res) {
   else if (body.text && messageRegex[3].test(body.text)) {
     res.writeHead(200);
     getMessageCount(postMessage);
+    res.end();
+  }
+  else if (body.text && messageRegex[4].test(body.text)) {
+    res.writeHead(200);
+    console.log("Updating member count database...");
+    postMessage("Updating database counts...");
+    populateCounts([],0);
     res.end();
   }
   else {
@@ -414,11 +421,12 @@ function getUserId(userName, callback, weekly) {
       for (var i = 0; i < obj.length; i++) {
         if (userName == obj[i].nickname) {
           userId = obj[i].id;
+          callback(postMessage, userName, userId, weekly);
           //console.log("User ID: " + userId);
         }
       }
       if (userId) {
-        callback(postMessage, userName, userId, weekly);
+        
       }
       else {
         postMessage(userName + " not found. Please use a current member name.");
@@ -498,7 +506,8 @@ function databaseUpdate(data) {
   Req = HTTP.request(options, function(res) {
     if (res.statusCode == 202 || 200) {
       //neat
-      console.log("Member count database updated successfully.")
+      console.log("Member count database updated successfully.");
+      postMessage("Database counts updated.");
     }
     else {
       console.log('rejecting bad status code ' + res.statusCode);
