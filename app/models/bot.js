@@ -72,10 +72,10 @@ function celebrate(body, res1, callback) {
         setTimeout(function(){postMessage("You're all my number 1! ❤")},2000);
         setTimeout(function(){postMessage("https://pbs.twimg.com/media/Buo_qYJIUAAZl8h.jpg")},3000);
       } else {
-      if ((msgCount + 1) % 10000 === 0 || /^(?=\d{4,})(\d)\1*$/.test(msgCount+1)) {
-        postMessage(groupGifs[Math.floor(Math.random() * groupGifs.length)]);
-        postMessage("Message " + (msgCount+1) + "! Party Time!!!!");
-      }
+      // if ((msgCount + 1) % 10000 === 0 || /^(?=\d{4,})(\d)\1*$/.test(msgCount+1)) {
+      //   postMessage(groupGifs[Math.floor(Math.random() * groupGifs.length)]);
+      //   postMessage("Message " + (msgCount+1) + "! Party Time!!!!");
+      // }
       }
     });
   });
