@@ -418,11 +418,16 @@ function getUserId(userName, callback, weekly) {
 
     res.on('end', function() {
       var obj = JSON.parse(output);
+      obj.sort((a,b) => {return (a.id < b.id) ? -1 : ((a.id > b.id) ? 1 : 0);});
+      let j = 0;
       for (var i = 0; i < obj.length; i++) {
         if (userName == obj[i].nickname) {
           userId = obj[i].id;
+          setTimeout((userId,j) => {
           callback(postMessage, userName, userId, weekly);
           //console.log("User ID: " + userId);
+          },1000*j,userId,j);
+          j++;
         }
       }
       if (userId) {
