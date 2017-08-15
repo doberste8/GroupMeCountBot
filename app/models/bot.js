@@ -351,7 +351,7 @@ function populateCounts(memberList, last_id) {
       var msgsLength = msgs.length;
       if (msgsLength > 0) {
         for (var i = 0; i < msgsLength; i++) {
-            if (msgs[i].user_id === "system") msgs[i].user_id = 1;
+            if (msgs[i].user_id === "system" || msgs[i].name === "GroupMe Calendar") { msgs[i].user_id = 1; msgs[i].name = "system"; }
             let index = memberList.findIndex(item => item.id === parseInt(msgs[i].user_id, 10));
             if (index === -1) {
               memberList.push({
