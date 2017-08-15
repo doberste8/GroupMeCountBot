@@ -66,16 +66,9 @@ function celebrate(body, res1, callback) {
     res.on('end', function() {
       let obj = JSON.parse(output);
       let msgCount = obj.response.count;
-      if ((msgCount + 1) === 100000) {
-        postMessage("🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟🌟 Let it be know that on this day, August 10th 2017, a monumentous milestone was achieved by an outstanding group of dedicated individuals who banded together for a cause greater than themselves. With extraordinary drive and unfailing commitment they proved to the world and to themselves that GroupMe is more than a social media platform but a true way of life. Thank you for allowing me the privilege of serving as your guide on such an epic journey. On this your 🎉🎉 100,000th message 🎉🎉 I have but one thing to say to you, my beloved friends: Shit-posters, I salute you!");
-        setTimeout(function(){postMessage("👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏👏")},1000);
-        setTimeout(function(){postMessage("You're all my number 1! ❤")},2000);
-        setTimeout(function(){postMessage("https://pbs.twimg.com/media/Buo_qYJIUAAZl8h.jpg")},3000);
-      } else {
-      // if ((msgCount + 1) % 10000 === 0 || /^(?=\d{4,})(\d)\1*$/.test(msgCount+1)) {
-      //   postMessage(groupGifs[Math.floor(Math.random() * groupGifs.length)]);
-      //   postMessage("Message " + (msgCount+1) + "! Party Time!!!!");
-      // }
+      if ((msgCount + 1) % 10000 === 0 || /^(?=\d{4,})(\d)\1*$/.test(msgCount+1)) {
+        postMessage(groupGifs[Math.floor(Math.random() * groupGifs.length)]);
+        postMessage("Message " + (msgCount+1) + "! Party Time!!!!");
       }
     });
   });
